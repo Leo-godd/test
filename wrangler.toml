@@ -10,7 +10,7 @@ run_worker_first = ["/api/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "psych-platform"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "6996fa2c-c138-4618-8501-b0418e21e6c0"
 migrations_dir = "migrations"
 
 [vars]
