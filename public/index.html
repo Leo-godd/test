@@ -1,1 +1,129 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>你的心理探索空间</title><link rel="stylesheet" href="/style.css"></head><body><main class="shell hero"><div class="eyebrow">SELF EXPLORATION</div><h1>你的心理探索空间</h1><p class="lead">一些我们平时不会问自己的问题，值得被认真看见。</p><div class="hero-card"><h2>已有验证码？</h2><p>输入购买后收到的验证码，进入你的测试空间。</p><a class="btn" href="/login.html">输入验证码 →</a></div><p class="muted">本网站用于自我探索，不构成心理诊断或医疗建议。</p></main></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>心理探索空间</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .hero {
+      text-align: center;
+      padding: 56px 20px 36px;
+    }
+
+    .hero h1 {
+      margin: 0 0 16px;
+      font-size: 34px;
+      letter-spacing: .04em;
+    }
+
+    .hero p {
+      margin: 0 auto;
+      max-width: 620px;
+      line-height: 1.9;
+      opacity: .72;
+    }
+
+    .tests {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .test-card {
+      border: 1px solid rgba(0,0,0,.1);
+      border-radius: 18px;
+      padding: 28px;
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    }
+
+    .test-card h2 {
+      margin: 0 0 12px;
+      font-size: 23px;
+    }
+
+    .test-card p {
+      line-height: 1.8;
+      opacity: .72;
+      min-height: 58px;
+    }
+
+    .test-card a {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: #222;
+      color: white;
+      text-decoration: none;
+    }
+
+    .test-card a:hover {
+      opacity: .82;
+    }
+
+    .notice {
+      max-width: 700px;
+      margin: 36px auto 60px;
+      padding: 0 20px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.8;
+      opacity: .55;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+    <section class="hero">
+      <h1>心理探索空间</h1>
+
+      <p>
+        一些我们平时不会问自己的问题，
+        值得被认真看见。
+      </p >
+    </section>
+
+    <section class="tests">
+
+      <article class="test-card">
+        <h2>压力地图</h2>
+
+        <p>
+          看见压力背后真正想保护的东西，
+          了解你正在承受什么，以及它为什么如此重要。
+        </p >
+
+        <a href=" ">
+          进入测试 →
+        </a >
+      </article>
+
+      <article class="test-card">
+        <h2>人生意义探索</h2>
+
+        <p>
+          关于意义、方向、投入与存在感，
+          探索什么正在支撑你继续向前。
+        </p >
+
+        <a href="/test-placeholder.html?test=meaning">
+          进入测试 →
+        </a >
+      </article>
+
+    </section>
+
+    <div class="notice">
+      本网站用于个人心理自我探索，不构成心理诊断、治疗或医疗建议。
+    </div>
+  </main>
+
+</body>
+</html>
