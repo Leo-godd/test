@@ -1,4 +1,4 @@
-name = "platform"
+name = "psy-platform"
 main = "src/worker.js"
 compatibility_date = "2026-08-24"
 
