@@ -1,1 +1,284 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>测试准备中</title><link rel="stylesheet" href="/style.css"></head><body><main class="shell narrow"><a class="back" href="/tests.html">← 返回测试中心</a><div class="eyebrow">COMING SOON</div><h1>这个测试还在打磨。</h1><p class="lead small">平台已经搭好。等你把题目、计分逻辑和结果报告完成后，再把具体测试接进来。</p></main></body></html>
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>进入测试 - 心理探索空间</title>
+
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    .access-page {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .access-page h1 {
+      margin-bottom: 14px;
+    }
+
+    .access-page p {
+      line-height: 1.8;
+      opacity: .7;
+    }
+
+    .code-input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 28px;
+      padding: 16px;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: 12px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: .15em;
+    }
+
+    .verify-button {
+      margin-top: 18px;
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 999px;
+      background: #222;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 18px;
+      min-height: 24px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="access-page">
+
+    <h1 id="test-title">
+      正在加载……
+    </h1>
+
+    <p id="test-description">
+      请稍候。
+    </p >
+
+    <input
+      id="code"
+      class="code-input"
+      type="text"
+      maxlength="9"
+      placeholder="XXXX-XXXX"
+      autocomplete="off"
+    >
+
+    <button
+      id="verify"
+      class="verify-button"
+    >
+      验证并进入测试
+    </button>
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+  </main>
+
+  <script>
+
+    const params = new URLSearchParams(
+      location.search
+    );
+
+    const testSlug =
+      params.get("test") || "";
+
+    const tests = {
+      "stress-map": {
+        title: "压力地图",
+        description:
+          "看见压力背后真正想保护的东西。"
+      },
+
+      "meaning": {
+        title: "人生意义探索",
+        description:
+          "关于意义、方向、投入与存在感。"
+      }
+    };
+
+    const test = tests[testSlug];
+
+    const title =
+      document.getElementById("test-title");
+
+    const description =
+      document.getElementById("test-description");
+
+    const codeInput =
+      document.getElementById("code");
+
+    const button =
+      document.getElementById("verify");
+
+    const message =
+      document.getElementById("message");
+
+
+    if (!test) {
+
+      title.textContent = "测试不存在";
+
+      description.textContent =
+        "请返回测试列表重新选择。";
+
+      button.style.display = "none";
+
+    } else {
+
+      title.textContent = test.title;
+
+      description.textContent =
+        test.description;
+    }
+
+
+    /*
+     * 给当前浏览器生成一个随机设备 ID
+     *
+     * 不保存真实姓名、手机号等个人信息。
+     */
+    function getDeviceId() {
+
+      let id =
+        localStorage.getItem(
+          "psych_device_id"
+        );
+
+      if (!id) {
+
+        id =
+          crypto.randomUUID();
+
+        localStorage.setItem(
+          "psych_device_id",
+          id
+        );
+      }
+
+      return id;
+    }
+
+
+    button.addEventListener(
+      "click",
+      async () => {
+
+        const code =
+          codeInput.value
+            .trim()
+            .toUpperCase();
+
+        if (!code) {
+
+          message.textContent =
+            "请输入验证码。";
+
+          return;
+        }
+
+        button.disabled = true;
+
+        message.textContent =
+          "正在验证……";
+
+        try {
+
+          const response =
+            await fetch("/api/verify", {
+
+              method: "POST",
+
+              headers: {
+                "content-type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+
+                code,
+
+                testSlug,
+
+                deviceId:
+                  getDeviceId()
+
+              })
+
+            });
+
+
+          const data =
+            await response.json();
+
+
+          if (!response.ok || !data.ok) {
+
+            message.textContent =
+              data.error ||
+              "验证码验证失败。";
+
+            button.disabled = false;
+
+            return;
+          }
+
+
+          /*
+           * 保存当前测试的授权 token
+           */
+          localStorage.setItem(
+            `psych_token_${testSlug}`,
+            data.token
+          );
+
+
+          /*
+           * 进入真正测试页面
+           *
+           * 目前先进入占位页面。
+           * 以后我们把真正的心理测试放这里。
+           */
+          location.href =
+            `/tests.html?test=${encodeURIComponent(
+              testSlug
+            )}`;
+
+        } catch (error) {
+
+          console.error(error);
+
+          message.textContent =
+            "网络出现问题，请稍后再试。";
+
+          button.disabled = false;
+        }
+      }
+    );
+
+  </script>
+
+</body>
+</html>
