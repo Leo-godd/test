@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>测试</title><link rel="stylesheet" href="/style.css"></head>
+<body><main class="shell narrow"><header class="top"><a class="back" href="/">← 心理探索空间</a><button id="logout" class="text-btn">退出授权</button></header><div id="app"><div class="loading">正在验证授权…</div></div></main><script>
+const slug=new URLSearchParams(location.search).get('test')||'';
+const token=localStorage.getItem('psych_token_'+slug);
+const app=document.getElementById('app');
+document.getElementById('logout').onclick=()=>{localStorage.removeItem('psych_token_'+slug);location.href='/';};
+async function load(){
+ if(!slug||!token){location.href='/test-placeholder.html?test='+encodeURIComponent(slug);return;}
+ const r=await fetch('/api/me',{headers:{authorization:'Bearer '+token}}); const d=await r.json();
+ if(!r.ok||!d.ok||d.testSlug!==slug){localStorage.removeItem('psych_token_'+slug);location.href='/test-placeholder.html?test='+encodeURIComponent(slug);return;}
+ const left=Math.max(0,d.expiresAt-Date.now()),h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000);
+ app.innerHTML='<div class="eyebrow">AUTHORIZED TEST</div><h1>'+d.test.title+'</h1><p class="lead small">授权剩余约 '+h+' 小时 '+m+' 分钟。</p><div class="panel"><h2>测试内容暂未接入</h2><p class="muted">这个位置就是未来真正的「'+d.test.title+'」测试。当前先把授权、验证码和平台基础设施跑通。</p></div>';
+}
+load();
+</script></body></html>

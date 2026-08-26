@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>进入测试 - 心理探索空间</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .access-page{max-width:520px;margin:0 auto;padding:70px 20px;text-align:center}.access-page h1{margin-bottom:14px}.access-page p{line-height:1.8;opacity:.7}.code-input{width:100%;box-sizing:border-box;margin-top:28px;padding:16px;border:1px solid rgba(0,0,0,.15);border-radius:12px;font-size:18px;text-align:center;letter-spacing:.15em}.verify-button{margin-top:18px;width:100%;padding:14px;border:0;border-radius:999px;background:#222;color:white;font-size:16px;cursor:pointer}.message{margin-top:18px;min-height:24px;line-height:1.7}.success{color:#4d705a}.error{color:#9a4d42}
+  </style>
+</head>
+<body>
+<main class="access-page">
+  <a class="back" href="/">← 返回测试列表</a>
+  <h1 id="test-title">正在加载……</h1>
+  <p id="test-description">请稍候。</p>
+  <input id="code" class="code-input" type="text" maxlength="9" placeholder="XXXX-XXXX" autocomplete="one-time-code">
+  <button id="verify" class="verify-button">验证并进入测试</button>
+  <div id="message" class="message"></div>
+</main>
+<script>
+const testSlug = new URLSearchParams(location.search).get('test') || '';
+const title = document.getElementById('test-title');
+const description = document.getElementById('test-description');
+const input = document.getElementById('code');
+const button = document.getElementById('verify');
+const message = document.getElementById('message');
+const tests = {
+  'stress-map': { title:'压力地图', description:'看见压力背后真正想保护的东西。' },
+  'meaning': { title:'人生意义探索', description:'关于意义、方向、投入与存在感。' }
+};
+const test = tests[testSlug];
+if (!test) { title.textContent='测试不存在'; description.textContent='请返回测试列表重新选择。'; button.disabled=true; }
+else { title.textContent=test.title; description.textContent=test.description; }
+
+function deviceToken(){
+  const key='psych_platform_device';
+  let token=localStorage.getItem(key);
+  if(!token){ token=crypto.randomUUID()+crypto.randomUUID(); localStorage.setItem(key,token); }
+  return token;
+}
+input.addEventListener('input',()=>{
+  let v=input.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
+  input.value=v.length>4?v.slice(0,4)+'-'+v.slice(4):v;
+});
+button.addEventListener('click',async()=>{
+  const code=input.value.trim().toUpperCase();
+  if(!code){ message.className='message error'; message.textContent='请输入验证码。'; return; }
+  button.disabled=true; message.className='message'; message.textContent='正在验证……';
+  try{
+    const r=await fetch('/api/verify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({code,testSlug,deviceToken:deviceToken()})});
+    const d=await r.json();
+    if(!r.ok||!d.ok) throw new Error(d.error||'验证码验证失败。');
+    localStorage.setItem('psych_token_'+testSlug,d.token);
+    message.className='message success'; message.textContent='验证成功，正在进入测试……';
+    setTimeout(()=>{ location.href='/tests.html?test='+encodeURIComponent(testSlug); },250);
+  }catch(e){ message.className='message error'; message.textContent=e.message; button.disabled=false; }
+});
+input.addEventListener('keydown',e=>{if(e.key==='Enter')button.click();});
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+name = "psych-platform"
+main = "src/worker.js"
+compatibility_date = "2026-08-24"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "psych-platform"
+database_id = "6996fa2c-c138-4618-8501-b0418e21e6c0"
+migrations_dir = "migration"
+
+[vars]
+APP_NAME = "你的心理探索空间"
